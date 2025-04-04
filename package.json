@@ -1,0 +1,20 @@
+{
+  "name": "druid-cli",
+  "version": "1.0.0",
+  "description": "CLI to install Dru^ID CMS from scratch",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@inquirer/prompts": "^7.4.1",
+    "fs-extra": "^11.3.0",
+    "open": "^10.1.0"
+  },
+  "bin": {
+    "druid": "./index.js"
+  }
+}
