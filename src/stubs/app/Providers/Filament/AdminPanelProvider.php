@@ -18,6 +18,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Webid\Druid\DruidPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -73,8 +74,9 @@ class AdminPanelProvider extends PanelProvider
                     ->navigationSort(3)
                     ->navigationCountBadge()
                     ->resource(MediaResource::class),
+                DruidPlugin::make(),
             ])
-            ->brandName('Web^ID')
+            ->brandName('Dru^ID')
             ->favicon(asset('/images/favicon.svg'));
     }
 }

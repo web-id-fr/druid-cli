@@ -15,16 +15,24 @@ if (command !== 'new') {
     process.exit(1)
 }
 
+process.on('uncaughtException', (error) => {
+    if (error.name === 'ExitPromptError') {
+        console.log('👋 until next time!');
+    } else {
+        throw error;
+    }
+});
+
 const laravelVersion = await select({
     message: 'Which version of Laravel do you want to use?',
     choices: [
         {
-            name: '11',
-            value: '11',
-        },
-        {
             name: '12',
             value: '12',
+        },
+        {
+            name: '11',
+            value: '11',
         },
     ]
 })
@@ -33,17 +41,17 @@ const phpVersion = await select({
     message: 'Which version of PHP do you want to use?',
     choices: [
         {
-            name: '8.2',
-            value: '8.2',
+            name: '8.4',
+            value: '8.4',
         },
         {
             name: '8.3',
             value: '8.3',
         },
         {
-            name: '8.4',
-            value: '8.4',
-        }
+            name: '8.2',
+            value: '8.2',
+        },
     ]
 })
 
@@ -67,7 +75,7 @@ await copySpecificStubs()
 
 const needsToInstallDruidRepo = await confirm({message: 'Do you want to install the Dru^ID repository to contribute on the project?'})
 if (needsToInstallDruidRepo) {
-    await executeCommand('git clone git@github.com:web-id-fr/druid.git', newDirectory)
+    await executeCommand('git clone git@github.com:web-id-fr/druid.git druid-repository', newDirectory)
     await addLocalRepositoryToComposerJson()
 }
 
@@ -77,6 +85,12 @@ if (needsToInstallDruidDemoData) {
 }
 
 await executeCommand('git add . && git commit -m "Install Dru^ID"', newDirectory)
+
+const needsToInstallDebugTools = await confirm({message: 'Do you want to install Laravel debug bar + Telescope?'})
+if (needsToInstallDebugTools) {
+    await executeCommand('make install_debug_tools', newDirectory)
+    await executeCommand('git add . && git commit -m "Add debug tools"', newDirectory)
+}
 
 await openBrowser()
 
@@ -125,7 +139,6 @@ async function replaceInFile(filePath: string, searchValue: string, replaceValue
     }
 }
 
-
 async function executeCommand(command: string, directory: string) {
     console.info("🚀 Running command " + command + "...")
     await new Promise<void>((resolve, reject) => {
@@ -148,7 +161,7 @@ async function addLocalRepositoryToComposerJson() {
     composerJson.repositories = composerJson.repositories || []
     composerJson.repositories.push({
         type: "path",
-        url: "./druid-repo",
+        url: "./druid-repository",
         options: {
             symlink: true
         }

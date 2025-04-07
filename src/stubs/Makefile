@@ -34,12 +34,21 @@ install: generate_certificate_with_ca build start ## Setup docker compose stack
 	${DOCKER_EXEC_PHP} php artisan curator:install --no-interaction
 	sleep 1 #Avoid same second db migration prefix between curator and druid
 	${DOCKER_EXEC_PHP} php artisan vendor:publish --provider="Webid\Druid\DruidServiceProvider"
+	${DOCKER_EXEC_PHP} php artisan vendor:publish --tag="curator-config"
+
+	${DOCKER_EXEC_PHP} php artisan storage:link
 
 	$(MAKE) fresh
 
-	${DOCKER_EXEC_NODE} npm i
+	${DOCKER_EXEC_NODE} npm i -D cropperjs
 	${DOCKER_EXEC_NODE} npm run build
 	@echo "🔨 Project setup done!"
+
+install_debug_tools:
+	@$(DOCKER_EXEC_PHP) composer require barryvdh/laravel-debugbar --dev
+	@$(DOCKER_EXEC_PHP) composer require laravel/telescope
+	${DOCKER_EXEC_PHP} php artisan telescope:install
+	${DOCKER_EXEC_PHP} php artisan migrate
 
 generate_certificate_with_ca:
 	@echo "🔒️ Generate certificate..."

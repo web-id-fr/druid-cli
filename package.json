@@ -16,7 +16,7 @@
     "open": "^10.1.0"
   },
   "bin": {
-    "druid": "./dist/index.js"
+    "druid": "./src/index.ts"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
