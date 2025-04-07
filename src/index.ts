@@ -2,10 +2,11 @@
 
 import {confirm, input, select} from '@inquirer/prompts'
 import fs from 'fs-extra'
-import {fileURLToPath} from 'url'
-import path from 'path'
 import open from "open"
 import {exec} from 'child_process'
+
+import {fileURLToPath} from 'url'
+import path from 'path'
 
 const [, , command] = process.argv
 
@@ -53,7 +54,7 @@ const newDirectory = path.join(currentDir, directoryName)
 await fs.ensureDir(newDirectory)
 
 const currentScriptFilePath = fileURLToPath(import.meta.url)
-const currentScriptDirectory = path.dirname(currentScriptFilePath)
+const distDirectory = path.dirname(currentScriptFilePath)
 
 const laravelInstallCommand = `composer create-project --prefer-dist laravel/laravel ${newDirectory} ${laravelVersion}`
 
@@ -64,13 +65,13 @@ await executeCommand('git init && git add . && git commit -m "Init project"', ne
 await executeCommand("make install", newDirectory)
 await copySpecificStubs()
 
-const needsToInstallDruidRepo = await confirm({message: 'Do you want to install the Dru^ID repository to contribute on the project?'});
+const needsToInstallDruidRepo = await confirm({message: 'Do you want to install the Dru^ID repository to contribute on the project?'})
 if (needsToInstallDruidRepo) {
     await executeCommand('git clone git@github.com:web-id-fr/druid.git', newDirectory)
     await addLocalRepositoryToComposerJson()
 }
 
-const needsToInstallDruidDemoData = await confirm({message: 'Do you want to seed the database with demo content?'});
+const needsToInstallDruidDemoData = await confirm({message: 'Do you want to seed the database with demo content?'})
 if (needsToInstallDruidDemoData) {
     await executeCommand('make seed_demo', newDirectory)
 }
@@ -81,7 +82,7 @@ await openBrowser()
 
 console.info('✅ All done! Ready to go.')
 
-async function execLaravelInstallCommand(command) {
+async function execLaravelInstallCommand(command: string) {
     console.info("🚀 Installing Laravel...")
     await new Promise((resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
@@ -97,13 +98,14 @@ async function execLaravelInstallCommand(command) {
 }
 
 async function copyStubs() {
-    console.info("🚀 Copying stubs...")
-    await fs.copy(currentScriptDirectory + '/stubs', newDirectory)
+    console.info("🚀 Copying stubs toto...")
+    console.info((distDirectory))
+    await fs.copy(path.join(distDirectory, 'stubs'), newDirectory)
 }
 
 async function copySpecificStubs() {
     console.info("🚀 Copying specific stubs...")
-    await fs.copy(currentScriptDirectory + '/stubs/app/Providers/Filament', newDirectory + '/app/Providers/Filament')
+    await fs.copy(path.join(distDirectory, '/stubs/app/Providers/Filament'), path.join(newDirectory, '/app/Providers/Filament'))
 }
 
 async function replaceVariablesInStubs() {
@@ -113,7 +115,7 @@ async function replaceVariablesInStubs() {
     await replaceInFile(dockerfilePath, 'PHPVERSION', phpVersion.replace('_', '.'))
 }
 
-async function replaceInFile(filePath, searchValue, replaceValue) {
+async function replaceInFile(filePath: string, searchValue: string, replaceValue: string) {
     try {
         let content = await fs.readFile(filePath, 'utf8')
         content = content.replace(new RegExp(searchValue, 'g'), replaceValue)
@@ -124,9 +126,9 @@ async function replaceInFile(filePath, searchValue, replaceValue) {
 }
 
 
-async function executeCommand(command, directory) {
+async function executeCommand(command: string, directory: string) {
     console.info("🚀 Running command " + command + "...")
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
         exec(command, {cwd: directory}, (error, stdout, stderr) => {
             if (error) {
                 reject(new Error(`Error during command execution: ${error.message}`))
@@ -140,7 +142,7 @@ async function executeCommand(command, directory) {
 
 async function addLocalRepositoryToComposerJson() {
     console.info("🚀 Adding symlink to druid repo...")
-    const composerPath = path.join(newDirectory, 'composer.json');
+    const composerPath = path.join(newDirectory, 'composer.json')
     const composerJson = await fs.readJson(composerPath)
 
     composerJson.repositories = composerJson.repositories || []
@@ -152,7 +154,7 @@ async function addLocalRepositoryToComposerJson() {
         }
     })
 
-    await fs.writeJson(composerPath, composerJson, {spaces: 4});
+    await fs.writeJson(composerPath, composerJson, {spaces: 4})
 }
 
 async function openBrowser() {

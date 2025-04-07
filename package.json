@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "tsc --watch"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,12 @@
     "open": "^10.1.0"
   },
   "bin": {
-    "druid": "./index.js"
+    "druid": "./dist/index.js"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.14.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
