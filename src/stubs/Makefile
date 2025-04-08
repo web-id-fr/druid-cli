@@ -13,8 +13,9 @@ help:
 #### STACK
 #############
 
-install: generate_certificate_with_ca build start ## Setup docker compose stack
-	@echo "🔨 Setup Composer dependencies..."
+install: build start ## Setup docker compose stack
+	@echo "🔨 Setup Composer dependencies...
+"
 	$(DOCKER_EXEC_PHP) bash -c '\
 		if [ -f .composer/auth.json ]; then \
 			echo "Found auth.json, copying to /home/web/.config/composer/"; \
@@ -49,10 +50,6 @@ install_debug_tools:
 	@$(DOCKER_EXEC_PHP) composer require laravel/telescope
 	${DOCKER_EXEC_PHP} php artisan telescope:install
 	${DOCKER_EXEC_PHP} php artisan migrate
-
-generate_certificate_with_ca:
-	@echo "🔒️ Generate certificate..."
-	cd docker/dev/traefik/certs-with-ca && ./create-project-wildcard-certificate.sh
 
 build: ## Build Docker stack
 	@echo "🐳 Build or rebuild stack images..."

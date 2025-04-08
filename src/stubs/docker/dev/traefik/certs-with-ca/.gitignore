@@ -1,5 +1,0 @@
-*
-!.gitignore
-!druid-container.localhost.csr.conf
-!druid-container.localhost.ext
-!create-project-wildcard-certificate.sh

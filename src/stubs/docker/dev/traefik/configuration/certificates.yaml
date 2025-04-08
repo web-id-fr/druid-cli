@@ -1,4 +1,0 @@
-tls:
-  certificates:
-    - certFile: /certs/druid-container.localhost.crt
-      keyFile: /certs/druid-container.localhost.key
