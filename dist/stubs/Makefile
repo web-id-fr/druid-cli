@@ -14,16 +14,7 @@ help:
 #############
 
 install: build start ## Setup docker compose stack
-	@echo "🔨 Setup Composer dependencies...
-"
-	$(DOCKER_EXEC_PHP) bash -c '\
-		if [ -f .composer/auth.json ]; then \
-			echo "Found auth.json, copying to /home/web/.config/composer/"; \
-			mkdir -p /home/web/.config/composer; \
-			cp .composer/auth.json /home/web/.config/composer/auth.json; \
-		else \
-			echo "auth.json not found, skipping copy."; \
-		fi'
+	@echo "🔨 Setup Composer dependencies..."
 	@$(DOCKER_EXEC_PHP) composer install
 	@$(DOCKER_EXEC_PHP) composer require filament/filament:"^3.3" -W
 	@$(DOCKER_EXEC_PHP) composer require awcodes/filament-curator
@@ -79,7 +70,6 @@ destroy: ## Destroy Docker stack
 restart: stop start ## Restart stack
 
 start: ## Start Docker stack
-	@echo "🐳 Make sure docker stack is up..."
 	@$(DOCKER_COMPOSE) up -d --wait
 
 stop: ## Stop Docker stack
@@ -90,12 +80,6 @@ stop: ## Stop Docker stack
 #############
 
 fresh: ## Refresh Docker DBs
-	@echo "🗃️ Setup databases and run default seeding..."
-	# delete storage files files
-	$(DOCKER_EXEC_PHP) bash -c '\
-		if [ -d storage/debugbar/ ]; then find storage/debugbar/ -type f -delete; fi; \
-		if [ -d storage/app/private/ ]; then find storage/app/private/ -type f -delete; fi; \
-		if [ -d storage/app/tmp/ ]; then find storage/app/tmp/ -type f -delete; fi'
 	${DOCKER_EXEC_PHP} php artisan migrate:fresh --seed
 	${DOCKER_EXEC_PHP} php artisan migrate:fresh --env=testing
 
