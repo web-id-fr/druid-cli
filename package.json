@@ -4,10 +4,6 @@
   "description": "CLI to install Dru^ID CMS from scratch",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "start": "tsc --watch"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {

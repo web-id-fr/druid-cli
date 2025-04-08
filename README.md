@@ -1,19 +1,20 @@
 # Dru^ID Installer
 
-Dru^ID Installer helps installing Dru^ID CMS in a fresh Laravel application.
+Dru^ID Installer helps installing Dru^ID CMS in a fresh Laravel application within a Docker environment.
 
 ## Requirements
 
 - A running Docker daemon
-- [Laravel installer]("https://github.com/laravel/installer")
+- Composer 2
 
 ## Usage
 
-`npx druid new`
-
-## Working on the Cli tool itself
+- Checkout the project
+- Inside the project directory, run
 
 ```
 npm i
-npm run start
+npm link
 ```
+
+- Then, at your workspace root run `druid new` and follow the instruction to start a new Dru^ID project. 
