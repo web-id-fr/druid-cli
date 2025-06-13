@@ -72,9 +72,10 @@ const needsToInstallDruidRepo = await confirm({ message: 'Do you want to install
 if (needsToInstallDruidRepo) {
     await executeCommand('git clone git@github.com:web-id-fr/druid.git druid-repository', newDirectory);
     await addLocalRepositoryToComposerJson();
-    await executeCommand('docker compose exec php-fpm composer require webid/druid:"*"', newDirectory);
-    await executeCommand('rm -rf vendor/ composer.lock && docker compose exec php-fpm composer clear-cache && docker compose exec php-fpm composer update', newDirectory);
-    await executeCommand('docker compose exec php-fpm composer i --working-dir=./druid-repository', newDirectory);
+    await executeCommand('docker compose exec php-fpm composer config repositories.druid path ./druid-repository', newDirectory);
+    await executeCommand('docker compose exec php-fpm composer require webid/druid:"dev-main" --no-update', newDirectory);
+    await executeCommand('docker compose exec php-fpm composer update webid/druid', newDirectory);
+    await executeCommand('docker compose exec php-fpm composer install --working-dir=./druid-repository', newDirectory);
 }
 const needsToInstallDruidDemoData = await confirm({ message: 'Do you want to seed the database with demo content?' });
 if (needsToInstallDruidDemoData) {
